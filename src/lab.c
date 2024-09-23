@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "lab.h"
+#include <stdlib.h>
+#include <string.h>
 
 
 void parse_args(int argc, char **argv) {
@@ -18,4 +20,17 @@ void parse_args(int argc, char **argv) {
         }
     }
 }
+/*
+ * Define get_prompt 
+ */
+char *get_prompt(const char *env) {
+    // Get the environment variable
+    const char *prompt = getenv(env);
 
+    // if prompt is not NULL, return it
+    if (prompt != NULL) {
+        return strdup(prompt);
+    }
+    // Return the default prompt if MY_PROMPT is not set
+    return strdup("type_here>");
+}
