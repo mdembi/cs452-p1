@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include "../src/lab.h"
 
-int main(void)
+int main(int argc, char **argv) 
 {
-  printf("hello world\n");
-  return 0;
+    parse_args(argc, argv);
+    return 0;
 }
