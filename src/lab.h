@@ -120,6 +120,11 @@ extern "C"
    */
   void parse_args(int argc, char **argv);
 
+  /**
+   * Checks if inputs are built-in commands
+   *
+   */
+  void input_check();
 
 
 #ifdef __cplusplus
