@@ -1,63 +1,70 @@
 #include <stdio.h>
 #include "../src/lab.h"
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "../src/commands.h"
+#include <unistd.h>
 
 int main(int argc, char **argv) 
 {
+    // Parse arguments
     parse_args(argc, argv);
 
-    // Set the prompt
-    char *prompt = get_prompt("MY_PROMPT");
-
-    // Free the the prompt memory
-    free(prompt); 
-
-    // Start checking additional inputs for built-in commands
-    input_check();
-
-    return 0;
-}
-
-void input_check() {
+    // Define variables for user lines and command arguments
     char *line;
-    char **argv;
+    char **argv_cmd;
 
+    // Main loop to read user input
     while (1) {
+        // Check for custom prompt
         char *prompt = get_prompt("MY_PROMPT");
         line = readline(prompt);
         free(prompt);
 
-        // check for EOF
+        // Check for EOF
         if (line == NULL) { 
             printf("\n");
             break;
         }
 
-        add_history(line); // basically lets us scroll via Readline
-        argv = cmd_parse(line);
+        // Add line to history
+        add_history(line);
 
-        if (argv != NULL && argv[0] != NULL) {
-            int found = 0;
+        // Parse the line and assign to argv_cmd
+        argv_cmd = cmd_parse(line);
 
-            // Check for built-in commands
-            for (int i = 0; commands[i].name != NULL; i++) { // Check against placeholders
-                if (strcmp(argv[0], commands[i].name) == 0) {
-                    commands[i].func(argv);
-                    found = 1;
-                    break;
-                }
-            }
+        // Check for built-in commands
+        if (argv_cmd != NULL && argv_cmd[0] != NULL) { 
+            int found = 0; 
 
+            // Exit
+            if (strcmp(argv_cmd[0], "exit") == 0) {
+                exit_shell(argv_cmd);
+                found = 1;
+            } 
+
+            // Placeholder for fork/exec Shane warns about
             if (!found) {
-                // to deal with fork/exec that Shane warns about
+                
             }
         }
 
-        free(line);
-        cmd_free(argv);
+        // Free memory
+        free(line); 
+        cmd_free(argv_cmd);
     }
+
+    return 0; 
+}
+
+/**
+ * Built-in function for user to exit shell
+*/
+void exit_shell(char **argv) {
+    if (argv[1] != NULL) {
+        fprintf("You've added too many arguments!\n");
+        return;
+    }
+    exit(0);
 }
