@@ -43,17 +43,28 @@ char *get_prompt(const char *env) {
  * Command parsing implementation
  */
 char **cmd_parse(const char *line) {
-    char **argv = malloc(64 * sizeof(char *)); // Allocate memory for argument array
-    if (!argv) return NULL; // Check allocation success
+    // Allocate memory for argument array
+    char **argv = malloc(64 * sizeof(char *));
+    // Check to see if memory was correctly allocated
+    if (!argv) return NULL; 
 
     unsigned int index = 0;
-    char *token = strtok(strdup(line), " "); // Duplicate the line to avoid modifying the original
+    // Copy the line
+    char *line_copy = strdup(line); 
+    // Use the copy and tokenize
+    char *token = strtok(line_copy, " "); 
+
     while (token != NULL) {
-        argv[index++] = token;
+        // Allocate memory for each token
+        argv[index] = strdup(token);
+        index++;
         token = strtok(NULL, " ");
     }
-    argv[index] = NULL; // Null-terminate the array
+    // Null out the array
+    argv[index] = NULL;
 
+    // Free the copy
+    free(line_copy); 
     return argv;
 }
 
@@ -62,9 +73,11 @@ char **cmd_parse(const char *line) {
  */
 void cmd_free(char **line) {
     if (line) {
+        // Free each token
         for (unsigned int i = 0; line[i] != NULL; i++) {
-            free(line[i]); // Free each token
+            free(line[i]); 
         }
-        free(line); // Free the argument array
+        // Free the line
+        free(line); 
     }
 }
