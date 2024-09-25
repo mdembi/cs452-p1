@@ -5,6 +5,8 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
+#include <pwd.h>
+#include "../src/commands.h"
 
 // Declare functions to avoid errors
 void exit_shell(char **argv);
@@ -46,6 +48,14 @@ int main(int argc, char **argv)
                 exit_shell(argv_cmd);
                 found = 1;
             } 
+
+            // Change directory
+            if (strcmp(argv_cmd[0], "cd") == 0) {
+                if (change_dir(argv_cmd) != 0) {
+                    fprintf(stderr, "Error changing directory\n");
+                }
+                found = 1;
+            }
 
             // Placeholder for fork/exec Shane warns about
             if (!found) {
