@@ -36,7 +36,7 @@ char *get_prompt(const char *env) {
         return strdup(prompt);
     }
     // Return the default prompt if MY_PROMPT is not set
-    return strdup("type_here>");
+    return strdup("shell>");
 }
 
 /*
