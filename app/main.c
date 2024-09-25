@@ -6,6 +6,9 @@
 #include <readline/history.h>
 #include <unistd.h>
 
+// Declare functions to avoid errors
+void exit_shell(char **argv);
+
 int main(int argc, char **argv) 
 {
     // Parse arguments
@@ -63,7 +66,7 @@ int main(int argc, char **argv)
 */
 void exit_shell(char **argv) {
     if (argv[1] != NULL) {
-        fprintf("You've added too many arguments!\n");
+        fprintf(stderr, "You've added too many arguments!\n");
         return;
     }
     exit(0);
