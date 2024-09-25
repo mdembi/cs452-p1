@@ -57,6 +57,12 @@ int main(int argc, char **argv)
                 found = 1;
             }
 
+            // Print command history
+            if (strcmp(argv_cmd[0], "history") == 0) {
+                print_history();
+                found = 1;
+            }
+
             // Placeholder for fork/exec Shane warns about
             if (!found) {
                 

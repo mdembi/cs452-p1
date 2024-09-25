@@ -3,5 +3,6 @@
 
 // Declare builtin commands
 int change_dir(char **argv);
+void print_history();
 
 #endif

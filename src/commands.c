@@ -39,3 +39,19 @@ int change_dir(char **argv) {
 
     return 0; 
 }
+
+/**
+ * Built-in function to print command history
+*/
+void print_history() {
+    HIST_ENTRY **hist_entries = history_list();
+    
+    if (hist_entries == NULL) {
+        printf("I can't seem to find a history...\n");
+        return;
+    }
+
+    for (int i = 0; hist_entries[i] != NULL; i++) {
+        printf("%d  %s\n", i + 1, hist_entries[i]->line);
+    }
+}
