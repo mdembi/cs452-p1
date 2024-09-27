@@ -7,6 +7,10 @@
 #include <unistd.h>
 #include <pwd.h>
 #include "commands.h"
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <limits.h>
+#include <ctype.h>
 
 /**
  * Built-in function for user to change directories
@@ -55,3 +59,59 @@ void print_history() {
         printf("%d  %s\n", i + 1, hist_entries[i]->line);
     }
 }
+
+/**
+ * Function to execute a command using fork and execvp
+ */
+void execute_command(char **argv_cmd) {
+    pid_t pid = fork();
+    if (pid == -1) {
+        perror("Fork failed");
+        return;
+    } else if (pid == 0) {
+        // Child process
+        execvp(argv_cmd[0], argv_cmd);
+        // If execvp returns, an error occurred
+        perror("Command execution failed");
+        exit(1);
+    } else {
+        // Parent process
+        int status;
+        // Wait for child process to finish
+        waitpid(pid, &status, 0);
+    }
+}
+
+/**
+ * Function to trim whitespace
+*/
+char* trim_white(char *str) {
+    if (str == NULL) return NULL;
+
+    // Move the pointer to the first non-whitespace character
+    while (isspace((unsigned char)*str)) str++;
+
+    // If the string is all whitespace, return an empty string
+    if (*str == '\0') return str;
+
+    // Find the end of the string
+    char *end = str + strlen(str) - 1;
+
+    // Move the pointer back to the last non-whitespace character
+    while (end > str && isspace((unsigned char)*end)) end--;
+
+    // Null-terminate the string after the last non-whitespace character
+    *(end + 1) = '\0';
+
+    return str;
+}
+
+/**
+ * Here's a lovely list of references:
+ * https://stackoverflow.com/questions/2552416/how-can-i-find-the-users-home-dir-in-a-cross-platform-manner-using-c
+ * https://stackoverflow.com/questions/2910377/get-home-directory-in-linux
+ * https://www.math.utah.edu/docs/info/hist_2.html
+ * https://www.digitalocean.com/community/tutorials/execvp-function-c-plus-plus
+ * https://stackoverflow.com/questions/49122665/how-to-use-execvp-to-execute-a-command
+ * 
+*/

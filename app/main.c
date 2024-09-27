@@ -7,6 +7,9 @@
 #include <unistd.h>
 #include <pwd.h>
 #include "../src/commands.h"
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <limits.h>
 
 // Declare functions to avoid errors
 void exit_shell(char **argv);
@@ -35,6 +38,9 @@ int main(int argc, char **argv)
 
         // Add line to history
         add_history(line);
+
+        // Trim whitespace
+        line = trim_white(line);
 
         // Parse the line and assign to argv_cmd
         argv_cmd = cmd_parse(line);
@@ -65,7 +71,7 @@ int main(int argc, char **argv)
 
             // Placeholder for fork/exec Shane warns about
             if (!found) {
-                
+                execute_command(argv_cmd);
             }
         }
 
