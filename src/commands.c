@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <limits.h>
 #include <ctype.h>
+#include <signal.h>
 
 /**
  * Built-in function for user to change directories
@@ -70,7 +71,16 @@ void execute_command(char **argv_cmd) {
         return;
     } else if (pid == 0) {
         // Child process
+        // Reset signals to default behavior
+        signal(SIGINT, SIG_DFL);    // Default action for interrupt
+        signal(SIGQUIT, SIG_DFL);   // Default action for quit
+        signal(SIGTSTP, SIG_DFL);   // Default action for stop
+        signal(SIGTTIN, SIG_DFL);   // Default action for terminal read
+        signal(SIGTTOU, SIG_DFL);   // Default action for terminal write
+
+        // Execute the command
         execvp(argv_cmd[0], argv_cmd);
+        
         // If execvp returns, an error occurred
         perror("Command execution failed");
         exit(1);

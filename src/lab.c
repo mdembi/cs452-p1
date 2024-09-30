@@ -3,10 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lab.h"
-
-// Function prototypes for internal use
-char **cmd_parse(const char *line);
-void cmd_free(char **line);
+#include <signal.h>
 
 void parse_args(int argc, char **argv) {
     int opt;
@@ -80,4 +77,27 @@ void cmd_free(char **line) {
         // Free the line
         free(line); 
     }
+}
+
+/**
+ * Shell function to also handle signals 
+*/
+void sh_init(struct shell *sh) {
+    // Initialize shell structure
+    sh->shell_terminal = STDIN_FILENO;
+    sh->shell_pgid = getpid();
+    sh->shell_is_interactive = isatty(sh->shell_terminal);
+    
+    // Put the shell in its own process group
+    setpgid(sh->shell_pgid, sh->shell_pgid);
+    
+    // Ignore signals in the shell (parent process)
+    signal(SIGINT, SIG_IGN);    // Ignore interrupt signal (Ctrl+C)
+    signal(SIGQUIT, SIG_IGN);   // Ignore quit signal (Ctrl+\)
+    signal(SIGTSTP, SIG_IGN);   // Ignore stop signal (Ctrl+Z)
+    signal(SIGTTIN, SIG_IGN);   // Ignore terminal read signals
+    signal(SIGTTOU, SIG_IGN);   // Ignore terminal write signals
+
+    // Change the foreground process group
+    tcsetpgrp(sh->shell_terminal, sh->shell_pgid);
 }

@@ -16,6 +16,11 @@ void exit_shell(char **argv);
 
 int main(int argc, char **argv) 
 {
+    struct shell sh;
+    
+    // Initialize shell
+    sh_init(&sh);
+
     // Parse arguments
     parse_args(argc, argv);
 
