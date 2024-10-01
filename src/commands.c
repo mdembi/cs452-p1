@@ -65,29 +65,30 @@ void print_history() {
  * Function to execute a command using fork and execvp
  */
 void execute_command(char **argv_cmd) {
+    // Start with fork
     pid_t pid = fork();
+
+    //If returns -1, that indicates an error
     if (pid == -1) {
-        perror("Fork failed");
+        perror("An error occurred");
         return;
     } else if (pid == 0) {
-        // Child process
-        // Reset signals to default behavior
-        signal(SIGINT, SIG_DFL);    // Default action for interrupt
-        signal(SIGQUIT, SIG_DFL);   // Default action for quit
-        signal(SIGTSTP, SIG_DFL);   // Default action for stop
-        signal(SIGTTIN, SIG_DFL);   // Default action for terminal read
-        signal(SIGTTOU, SIG_DFL);   // Default action for terminal write
+        // Set signals to default in child process
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+        signal(SIGTSTP, SIG_DFL);
+        signal(SIGTTIN, SIG_DFL);
+        signal(SIGTTOU, SIG_DFL);
 
         // Execute the command
         execvp(argv_cmd[0], argv_cmd);
         
         // If execvp returns, an error occurred
-        perror("Command execution failed");
+        perror("An error occured");
         exit(1);
     } else {
-        // Parent process
-        int status;
         // Wait for child process to finish
+        int status;
         waitpid(pid, &status, 0);
     }
 }
@@ -123,5 +124,6 @@ char* trim_white(char *str) {
  * https://www.math.utah.edu/docs/info/hist_2.html
  * https://www.digitalocean.com/community/tutorials/execvp-function-c-plus-plus
  * https://stackoverflow.com/questions/49122665/how-to-use-execvp-to-execute-a-command
+ * https://www.digitalocean.com/community/tutorials/how-to-use-bash-s-job-control-to-manage-foreground-and-background-processes
  * 
 */
